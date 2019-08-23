@@ -89,7 +89,7 @@ func getNewAcreLumber(adjacent_acres [8]string) string {
 	if count_tree > 0 && count_lumber > 0 {
 		return "#"
 	}
-	return "|"
+	return "."
 }
 
 func stringCount(str string, list [8]string) int {
@@ -124,6 +124,9 @@ func getAdjacentAcres(area [50][50]string, i int, k int) [8]string {
 	}
 	if i > 0 && k < 49 {
 		acres[6] = area[i-1][k+1]
+	}
+	if k > 0 && i < 49 {
+		acres[7] = area[i+1][k-1]
 	}
 	return acres
 }
