@@ -10,9 +10,9 @@ import (
 
 func main() {
 	original_area := scanFile()
-	new_area := convertAcre(original_area)
-	for i := 0; i < 8; i++ {
-		new_area = convertAcre(new_area)
+	new_area := convertAcres(original_area)
+	for i := 0; i < 9; i++ {
+		new_area = convertAcres(new_area)
 	}
 	outputArea(new_area)
 }
@@ -49,7 +49,7 @@ func writeToOutput(data string) {
 	}
 }
 
-func convertAcre(original [50][50]string) [50][50]string {
+func convertAcres(original [50][50]string) [50][50]string {
 	new_area := [50][50]string{}
 	for i := 0; i < 50; i++ {
 		for k := 0; k < 50; k++ {
