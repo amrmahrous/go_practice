@@ -26,7 +26,7 @@ func resources(final_area [50][50]string)(int){
 			if(final_area[i][k] == "#"){
 				labmer_count++
 			}
-			if(final_area[i][k] == "#"){
+			if(final_area[i][k] == "|"){
 				tree_count++
 			}
 		}
