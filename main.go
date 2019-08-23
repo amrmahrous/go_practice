@@ -14,9 +14,25 @@ func main() {
 	for i := 0; i < 9; i++ {
 		new_area = convertAcres(new_area)
 	}
+	resources := resources(new_area)
+	fmt.Println(resources, "resources found")
 	outputArea(new_area)
 }
-
+func resources(final_area [50][50]string)(int){
+	tree_count := 0
+	labmer_count := 0
+	for i := 0; i < 50; i++ {
+		for k := 0; k < 50; k++ {
+			if(final_area[i][k] == "#"){
+				labmer_count++
+			}
+			if(final_area[i][k] == "#"){
+				tree_count++
+			}
+		}
+	}
+	return labmer_count*tree_count
+}
 func outputArea(new_area [50][50]string) {
 	data := ""
 	for i := 0; i < 50; i++ {
