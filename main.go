@@ -57,24 +57,6 @@ func areaToString(area [AREA_WIDTH][AREA_LENGHT]string) string {
 	}
 	return data
 }
-func writeToFile(data string, file_name string) {
-	f, err := os.Create(file_name)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	if err != nil {
-		fmt.Println(err)
-		f.Close()
-		return
-	}
-	fmt.Println("file written : " + file_name)
-	err = f.Close()
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-}
 
 func generateNewArea(original [AREA_WIDTH][AREA_LENGHT]string) (new_area [AREA_WIDTH][AREA_LENGHT]string) {
 	for i := 0; i < AREA_WIDTH; i++ {
@@ -164,16 +146,6 @@ func getAdjacentAcres(area [AREA_WIDTH][AREA_LENGHT]string, i int, k int) [8]str
 	return acres
 }
 
-func scanFile() string {
-	filebuffer, err := ioutil.ReadFile(INPUT_FILE)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-	inputdata := string(filebuffer)
-	return inputdata
-}
-
 func stringToArea(inputdata string) (area [AREA_WIDTH][AREA_LENGHT]string) {
 	data := bufio.NewScanner(strings.NewReader(inputdata))
 	data.Split(bufio.ScanRunes)
@@ -189,4 +161,33 @@ func stringToArea(inputdata string) (area [AREA_WIDTH][AREA_LENGHT]string) {
 		}
 	}
 	return area
+}
+
+func scanFile() string {
+	filebuffer, err := ioutil.ReadFile(INPUT_FILE)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	inputdata := string(filebuffer)
+	return inputdata
+}
+
+func writeToFile(data string, file_name string) {
+	f, err := os.Create(file_name)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	if err != nil {
+		fmt.Println(err)
+		f.Close()
+		return
+	}
+	fmt.Println("file written : " + file_name)
+	err = f.Close()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 }
