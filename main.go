@@ -13,14 +13,14 @@ const ACRE_TREE string = "|"
 const ACRE_LAMBER string = "#"
 const INPUT_FILE string = "input.text"
 const OUTPUT_FILE string = "output.txt"
-const MINUTES_TO_Run int = 10
+const MINUTES_TO_RUN int = 10
 const AREA_WIDTH int = 50
 const AREA_LENGHT int = 50
 
 func main() {
 	fileContent := scanFile()
 	area := stringToArea(fileContent)
-	for i := 0; i < MINUTES_TO_Run; i++ {
+	for i := 0; i < MINUTES_TO_RUN; i++ {
 		area = generateNewArea(area)
 	}
 	resources_count := countResources(area)
@@ -76,8 +76,7 @@ func writeToFile(data string, file_name string) {
 	}
 }
 
-func generateNewArea(original [50][50]string) [50][50]string {
-	new_area := [AREA_WIDTH][AREA_LENGHT]string{}
+func generateNewArea(original [50][50]string) (new_area [AREA_WIDTH][AREA_LENGHT]string) {
 	for i := 0; i < AREA_WIDTH; i++ {
 		for k := 0; k < AREA_LENGHT; k++ {
 			current_arce := original[i][k]
