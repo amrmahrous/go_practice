@@ -8,56 +8,67 @@ import (
 	"strings"
 )
 
+const ACRE_OPEN string = "."
+const ACRE_TREE string = "|"
+const ACRE_LAMBER string = "#"
+const INPUT_FILE string = "input.text"
+const OUTPUT_FILE string = "output.txt"
+const MINUTES_TO_Run int = 10
+const AREA_WIDTH int = 50
+const AREA_LENGHT int = 50
+
 func main() {
-	original_area := scanFile()
-	new_area := convertAcres(original_area)
-	for i := 0; i < 9; i++ {
-		new_area = convertAcres(new_area)
+	fileContent := scanFile()
+	area := stringToArea(fileContent)
+	for i := 0; i < MINUTES_TO_Run; i++ {
+		area = generateNewArea(area)
 	}
-	resources := resources(new_area)
-	fmt.Println(resources, "resources found")
-	outputArea(new_area)
+	resources_count := countResources(area)
+	fmt.Println(resources_count, "resources found")
+	final_area_string := areaToString(area)
+	writeToFile(final_area_string, OUTPUT_FILE)
 }
-func resources(final_area [50][50]string)(int){
+func countResources(final_area [AREA_WIDTH][AREA_LENGHT]string) int {
 	tree_count := 0
 	labmer_count := 0
-	for i := 0; i < 50; i++ {
-		for k := 0; k < 50; k++ {
-			if(final_area[i][k] == "#"){
+	for i := 0; i < AREA_WIDTH; i++ {
+		for k := 0; k < AREA_LENGHT; k++ {
+			current_acre := final_area[i][k]
+			if current_acre == ACRE_LAMBER {
 				labmer_count++
 			}
-			if(final_area[i][k] == "|"){
+			if current_acre == ACRE_TREE {
 				tree_count++
 			}
 		}
 	}
-	return labmer_count*tree_count
+	return labmer_count * tree_count
 }
-func outputArea(new_area [50][50]string) {
+func areaToString(area [AREA_WIDTH][AREA_LENGHT]string) string {
 	data := ""
-	for i := 0; i < 50; i++ {
-		for k := 0; k < 50; k++ {
-			data = data + string(new_area[i][k])
-			if k == 49 {
+	for i := 0; i < AREA_WIDTH; i++ {
+		for k := 0; k < AREA_LENGHT; k++ {
+			current_acre := area[i][k]
+			data = data + string(current_acre)
+			if k == AREA_LENGHT-1 {
 				data = data + "\r\n"
 			}
 		}
 	}
-	writeToOutput(data)
+	return data
 }
-func writeToOutput(data string) {
-	f, err := os.Create("output.txt")
+func writeToFile(data string, file_name string) {
+	f, err := os.Create(file_name)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	l, err := f.WriteString(data)
 	if err != nil {
 		fmt.Println(err)
 		f.Close()
 		return
 	}
-	fmt.Println(l, "file written successfully")
+	fmt.Println("file written : " + file_name)
 	err = f.Close()
 	if err != nil {
 		fmt.Println(err)
@@ -65,47 +76,54 @@ func writeToOutput(data string) {
 	}
 }
 
-func convertAcres(original [50][50]string) [50][50]string {
-	new_area := [50][50]string{}
-	for i := 0; i < 50; i++ {
-		for k := 0; k < 50; k++ {
+func generateNewArea(original [50][50]string) [50][50]string {
+	new_area := [AREA_WIDTH][AREA_LENGHT]string{}
+	for i := 0; i < AREA_WIDTH; i++ {
+		for k := 0; k < AREA_LENGHT; k++ {
+			current_arce := original[i][k]
 			adjacent_acres := getAdjacentAcres(original, i, k)
-			if original[i][k] == "." {
-				new_area[i][k] = getNewAcreOpen(adjacent_acres)
-			}
-			if original[i][k] == "|" {
-				new_area[i][k] = getNewAcreTree(adjacent_acres)
-			}
-			if original[i][k] == "#" {
-				new_area[i][k] = getNewAcreLumber(adjacent_acres)
-			}
+			new_area[i][k] = getNewArce(current_arce, adjacent_acres)
 		}
 	}
 	return new_area
 }
-func getNewAcreOpen(adjacent_acres [8]string) string {
-	count_tree := stringCount("|", adjacent_acres)
-	if count_tree > 2 {
-		return "|"
+func getNewArce(current_arce string, adjacent_acres [8]string) string {
+	if current_arce == ACRE_OPEN {
+		return getNewAcreOpen(adjacent_acres)
 	}
-	return "."
+	if current_arce == ACRE_TREE {
+		return getNewAcreTree(adjacent_acres)
+	}
+	if current_arce == ACRE_LAMBER {
+		return getNewAcreLumber(adjacent_acres)
+	}
+	fmt.Println("input file has invalid character:" + current_arce)
+	os.Exit(1)
+	return ""
+}
+func getNewAcreOpen(adjacent_acres [8]string) string {
+	count_tree := stringCount(ACRE_TREE, adjacent_acres)
+	if count_tree > 2 {
+		return ACRE_TREE
+	}
+	return ACRE_OPEN
 }
 
 func getNewAcreTree(adjacent_acres [8]string) string {
-	count_lumber := stringCount("#", adjacent_acres)
+	count_lumber := stringCount(ACRE_LAMBER, adjacent_acres)
 	if count_lumber > 2 {
-		return "#"
+		return ACRE_LAMBER
 	}
-	return "|"
+	return ACRE_TREE
 }
 
 func getNewAcreLumber(adjacent_acres [8]string) string {
-	count_tree := stringCount("|", adjacent_acres)
-	count_lumber := stringCount("#", adjacent_acres)
+	count_tree := stringCount(ACRE_TREE, adjacent_acres)
+	count_lumber := stringCount(ACRE_LAMBER, adjacent_acres)
 	if count_tree > 0 && count_lumber > 0 {
-		return "#"
+		return ACRE_LAMBER
 	}
-	return "."
+	return ACRE_OPEN
 }
 
 func stringCount(str string, list [8]string) int {
@@ -118,15 +136,15 @@ func stringCount(str string, list [8]string) int {
 	return count
 }
 
-func getAdjacentAcres(area [50][50]string, i int, k int) [8]string {
+func getAdjacentAcres(area [AREA_WIDTH][AREA_LENGHT]string, i int, k int) [8]string {
 	acres := [8]string{}
-	if i < 49 && k < 49 {
+	if i < AREA_WIDTH-1 && k < AREA_LENGHT-1 {
 		acres[0] = area[i+1][k+1]
 	}
-	if i < 49 {
+	if i < AREA_WIDTH-1 {
 		acres[1] = area[i+1][k]
 	}
-	if k < 49 {
+	if k < AREA_LENGHT-1 {
 		acres[2] = area[i][k+1]
 	}
 	if i > 0 && k > 0 {
@@ -138,35 +156,37 @@ func getAdjacentAcres(area [50][50]string, i int, k int) [8]string {
 	if i > 0 {
 		acres[5] = area[i-1][k]
 	}
-	if i > 0 && k < 49 {
+	if i > 0 && k < AREA_LENGHT-1 {
 		acres[6] = area[i-1][k+1]
 	}
-	if k > 0 && i < 49 {
+	if k > 0 && i < AREA_WIDTH-1 {
 		acres[7] = area[i+1][k-1]
 	}
 	return acres
 }
 
-func scanFile() [50][50]string {
-	filename := "input.text"
-	filebuffer, err := ioutil.ReadFile(filename)
+func scanFile() string {
+	filebuffer, err := ioutil.ReadFile(INPUT_FILE)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 	inputdata := string(filebuffer)
+	return inputdata
+}
+
+func stringToArea(inputdata string) (area [AREA_WIDTH][AREA_LENGHT]string) {
 	data := bufio.NewScanner(strings.NewReader(inputdata))
 	data.Split(bufio.ScanRunes)
-
-	area := [50][50]string{}
-	for i := 0; i < 50; i++ {
-		for k := 0; k < 50; k++ {
+	for i := 0; i < AREA_WIDTH; i++ {
+		for k := 0; k < AREA_LENGHT; k++ {
 			data.Scan()
 			letter := data.Text()
 			if letter == "\n" || letter == "\r" {
 				data.Scan()
+				letter = data.Text()
 			}
-			area[i][k] = data.Text()
+			area[i][k] = letter
 		}
 	}
 	return area
