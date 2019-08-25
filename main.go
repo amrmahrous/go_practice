@@ -18,7 +18,7 @@ const AREA_WIDTH int = 50
 const AREA_LENGHT int = 50
 
 func main() {
-	file_content := scanFile()
+	file_content := scanFile(INPUT_FILE)
 	area := stringToArea(file_content)
 	for i := 0; i < MINUTES_TO_RUN; i++ {
 		area = generateNewArea(area)
@@ -163,8 +163,8 @@ func stringToArea(inputdata string) (area [AREA_WIDTH][AREA_LENGHT]string) {
 	return area
 }
 
-func scanFile() string {
-	filebuffer, err := ioutil.ReadFile(INPUT_FILE)
+func scanFile(file_name string) string {
+	filebuffer, err := ioutil.ReadFile(file_name)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
