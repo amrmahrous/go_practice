@@ -18,8 +18,8 @@ const AREA_WIDTH int = 50
 const AREA_LENGHT int = 50
 
 func main() {
-	fileContent := scanFile()
-	area := stringToArea(fileContent)
+	file_content := scanFile()
+	area := stringToArea(file_content)
 	for i := 0; i < MINUTES_TO_RUN; i++ {
 		area = generateNewArea(area)
 	}
@@ -76,7 +76,7 @@ func writeToFile(data string, file_name string) {
 	}
 }
 
-func generateNewArea(original [50][50]string) (new_area [AREA_WIDTH][AREA_LENGHT]string) {
+func generateNewArea(original [AREA_WIDTH][AREA_LENGHT]string) (new_area [AREA_WIDTH][AREA_LENGHT]string) {
 	for i := 0; i < AREA_WIDTH; i++ {
 		for k := 0; k < AREA_LENGHT; k++ {
 			current_arce := original[i][k]
